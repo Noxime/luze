@@ -1,0 +1,6 @@
+[package]
+name = "luze"
+version = "0.1.0"
+authors = ["noxim <aaro.peramaa@gmail.com>"]
+
+[dependencies]

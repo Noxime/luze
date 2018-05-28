@@ -1,0 +1,60 @@
+use std/io/stdout;
+
+type Animal {
+    age,
+    legs,
+};
+
+type Color {
+    red is u8,
+    green is u8,
+    blue is u8,
+};
+
+type Dog has Animal {
+    owner_id is usize,
+    collar_color is Color,
+};
+
+// no return type for function `foo`
+task foo;
+
+// implement the function `foo` for 1 generic argument (generic because `has` 
+// keyword) that is constrained to anything that has `Animal`
+impl foo
+with
+    bar has Animal {
+
+    println("This animal has {} legs", bar.legs);
+};
+
+
+// declare another function `is_likely_dead` which returns a boolean
+task is_likely_dead is bool;
+
+// implement the function `is_likely_dead` for 1 argument which has to be a 
+// `Dog` (due to `is` keyword in parameter declaration)
+impl is_likely_dead
+with
+    bar is Dog {
+    // declare a new (immutable) variable `likely_dead` with the value of 
+    // expression
+    var likely_dead is bar.age > 12;
+// close function and return the local variable `likely_dead`
+} likely_dead;
+
+// declare a new variable `pet` which is type `Dog` (could be inferred in this
+// case, since no other type has these fields in current scope) due to keyword 
+// `is`
+// we can see the infer in action with the field `collar_color` as there is no
+// `is Color { ... }`, the value comes directly instead of type name
+var pet is Dog {
+    age is 4,
+    legs is 4,
+    owner_id is 5023931,
+    collar_color is {
+        red: 44,
+        green: 170,
+        blue: 141,
+    },
+};
