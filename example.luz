@@ -80,6 +80,9 @@ var pet is Dog {
     },
 };
 
+// make another (mutable) variable from the previousley defined one
+mut other_pet is pet;
+
 // the later call to `is_likely_dead` can be started all the way up here since
 // its task, and therefore async
 
