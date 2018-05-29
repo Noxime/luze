@@ -1,8 +1,13 @@
+// import functions like `outln` into scope from `std/io/stdout.luz`
+// you could add `as name` keyword to the end to import all those functions
+// and types under `name.outln` for example (to lessen the clutter in current 
+// scope and help with name collisions)
 use std/io/stdout;
 
+// declare a new type `Animal`
 type Animal {
-    age,
-    legs,
+    age is usize, // a field with type `usize`
+    legs is usize,
 };
 
 type Color {
@@ -11,13 +16,26 @@ type Color {
     blue is u8,
 };
 
+// declare a type `Dog` which has all the fields of an animal and is compatible
+// with all functions that take an `Animal`
 type Dog has Animal {
     owner_id is usize,
     collar_color is Color,
 };
 
-// no return type for function `foo`
-task foo;
+// no return type for function `foo`. Here we can see the `impure` keyword,
+// which means this function is not a pure function (duh) aka it affects
+// something global (required for using other impure functions like outln)
+// using `impure` also forces the compiler to not optimize out or lazy evaluate
+// the function as it has side effects.
+// the other types of functions are `task` (detailed below) and `pure` which 
+// is the preferred version of `impure`. Pure functions are not allowed to call
+// any impure functions (unless wrapped in explicit `unsafe` blocks, more on
+// that later), and cannot touch any global variables as this would break
+// memory safety. `pure` functions are preferred along with `task` functions as
+// they make programs safer and also faster as compiler can fearlessly optimize
+// the heck out of them.
+impure foo;
 
 // implement the function `foo` for 1 generic argument (generic because `has` 
 // keyword) that is constrained to anything that has `Animal`
@@ -25,11 +43,14 @@ impl foo
 with
     bar has Animal {
 
-    println("This animal has {} legs", bar.legs);
+    outln("This animal has {} legs", bar.legs);
 };
 
 
-// declare another function `is_likely_dead` which returns a boolean
+// declare another function `is_likely_dead` which returns a boolean. Here the
+// keyword `task` is used instead of `impure` or `pure`, which means this
+// function is allowed to execute asynchronousley (and therefore has same
+// implicit requirements as pure functions)
 task is_likely_dead is bool;
 
 // implement the function `is_likely_dead` for 1 argument which has to be a 
@@ -57,4 +78,15 @@ var pet is Dog {
         green: 170,
         blue: 141,
     },
+};
+
+// the later call to `is_likely_dead` can be started all the way up here since
+// its task, and therefore async
+
+// call a(n impure) function
+foo(pet);
+
+if !is_likely_dead(dog) {
+    // here 
+    debug("oh no, doggo might be dead");
 };
