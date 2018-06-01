@@ -69,16 +69,16 @@ with
 // `is`
 // we can see the infer in action with the field `collar_color` as there is no
 // `is Color { ... }`, the value comes directly instead of type name
-var pet is Dog {
+var pet is Dog = [
     age is 4,
     legs is 4,
     owner_id is 5023931,
-    collar_color is {
+    collar_color = [
         red: 44,
         green: 170,
         blue: 141,
-    },
-};
+    ],
+];
 
 // make another (mutable) variable from the previousley defined one
 mut other_pet is pet;
@@ -93,3 +93,17 @@ if !is_likely_dead(dog) {
     // here 
     debug("oh no, doggo might be dead");
 };
+
+
+
+
+some_func: bool is pure(foo: SomeTypeOrTrait, some_other_func(_, _, baz, _)) {
+
+};
+
+
+/// //// //// // / // / /
+
+foo: u64 = 123;
+bar: bool() = {};
+def Baz;
