@@ -1,30 +1,3 @@
-#use std/io/std
-
-// variable (actually constant function)
-foo is bool = true;
-
-// constant function, also known as variable
-yeet is bool = { false };
-
-// function
-bar(baz is Qux, zoo has Slorp) is i32 = {
-    baz.value + zoo.field
-} is pure;
-
-// type alias
-Mine is bool;
-
-// struct definition with generic type argument T and is composed of Qux (which)
-// takes generic type bool
-Slorp(T) has Qux(bool) = <
-    field is i32,
-    generic_field is T,
->;
-
-// enum with generics
-Option(T) = <
-    Some(T),
-    None,
->;
-
-
+foo = 32;
+bar= "hello world";
+baz is bool=true;
