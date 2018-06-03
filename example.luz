@@ -1,109 +1,30 @@
-// import functions like `outln` into scope from `std/io/stdout.luz`
-// you could add `as name` keyword to the end to import all those functions
-// and types under `name.outln` for example (to lessen the clutter in current 
-// scope and help with name collisions)
-use std/io/stdout;
+#use std/io/std
 
-// declare a new type `Animal`
-type Animal {
-    age is usize, // a field with type `usize`
-    legs is usize,
-};
+// variable (actually constant function)
+foo is bool = true;
 
-type Color {
-    red is u8,
-    green is u8,
-    blue is u8,
-};
+// constant function, also known as variable
+yeet is bool = { false };
 
-// declare a type `Dog` which has all the fields of an animal and is compatible
-// with all functions that take an `Animal`
-type Dog has Animal {
-    owner_id is usize,
-    collar_color is Color,
-};
+// function
+bar(baz is Qux, zoo has Slorp) is i32 = {
+    baz.value + zoo.field
+} is pure;
 
-// no return type for function `foo`. Here we can see the `impure` keyword,
-// which means this function is not a pure function (duh) aka it affects
-// something global (required for using other impure functions like outln)
-// using `impure` also forces the compiler to not optimize out or lazy evaluate
-// the function as it has side effects.
-// the other types of functions are `task` (detailed below) and `pure` which 
-// is the preferred version of `impure`. Pure functions are not allowed to call
-// any impure functions (unless wrapped in explicit `unsafe` blocks, more on
-// that later), and cannot touch any global variables as this would break
-// memory safety. `pure` functions are preferred along with `task` functions as
-// they make programs safer and also faster as compiler can fearlessly optimize
-// the heck out of them.
-impure foo;
+// type alias
+Mine is bool;
 
-// implement the function `foo` for 1 generic argument (generic because `has` 
-// keyword) that is constrained to anything that has `Animal`
-impl foo
-with
-    bar has Animal {
+// struct definition with generic type argument T and is composed of Qux (which)
+// takes generic type bool
+Slorp(T) has Qux(bool) = <
+    field is i32,
+    generic_field is T,
+>;
 
-    outln("This animal has {} legs", bar.legs);
-};
+// enum with generics
+Option(T) = <
+    Some(T),
+    None,
+>;
 
 
-// declare another function `is_likely_dead` which returns a boolean. Here the
-// keyword `task` is used instead of `impure` or `pure`, which means this
-// function is allowed to execute asynchronousley (and therefore has same
-// implicit requirements as pure functions)
-task is_likely_dead is bool;
-
-// implement the function `is_likely_dead` for 1 argument which has to be a 
-// `Dog` (due to `is` keyword in parameter declaration)
-impl is_likely_dead
-with
-    bar is Dog {
-    // declare a new (immutable) variable `likely_dead` with the value of 
-    // expression
-    var likely_dead is bar.age > 12;
-// close function and return the local variable `likely_dead`
-} likely_dead;
-
-// declare a new variable `pet` which is type `Dog` (could be inferred in this
-// case, since no other type has these fields in current scope) due to keyword 
-// `is`
-// we can see the infer in action with the field `collar_color` as there is no
-// `is Color { ... }`, the value comes directly instead of type name
-var pet is Dog = [
-    age is 4,
-    legs is 4,
-    owner_id is 5023931,
-    collar_color = [
-        red: 44,
-        green: 170,
-        blue: 141,
-    ],
-];
-
-// make another (mutable) variable from the previousley defined one
-mut other_pet is pet;
-
-// the later call to `is_likely_dead` can be started all the way up here since
-// its task, and therefore async
-
-// call a(n impure) function
-foo(pet);
-
-if !is_likely_dead(dog) {
-    // here 
-    debug("oh no, doggo might be dead");
-};
-
-
-
-
-some_func: bool is pure(foo: SomeTypeOrTrait, some_other_func(_, _, baz, _)) {
-
-};
-
-
-/// //// //// // / // / /
-
-foo: u64 = 123;
-bar: bool() = {};
-def Baz;
